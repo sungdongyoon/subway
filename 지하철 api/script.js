@@ -83,8 +83,10 @@ const getStationInformation = async () => {
   // 1호선 역 개수 : 99개
   for(let i = 0; i < 99; i++){
     console.log(info[i].STATION_NM);
-    let stationNm = info[i].STATION_NM;
-    test.innerHTML = stationNm;
+    const stationNm = info[i].STATION_NM;
+    const div = document.createElement("div");
+    test.appendChild(div);
+    div.innerText = stationNm;
   }
 }
 
