@@ -71,3 +71,21 @@ const getStationData = async () => {
   destination2.innerHTML = `<div>2</div><span><b>${stationInfo2.trainLineNm}</span></b> <br/> <span>${stationInfo2.arvlMsg2}</span> <br/>
   ${stationInfo2.barvlDt}초 후에 도착 예정입니다.`;
 }
+
+
+const test = document.querySelector(".test");
+
+const getStationInformation = async () => {
+  let res = await fetch(`http://openapi.seoul.go.kr:8088/45724870526568643434635358536e/json/SearchSTNBySubwayLineInfo/1/100/ / /1호선`)
+  let data = await res.json();
+  console.log(data);
+  let info = data.SearchSTNBySubwayLineInfo.row;
+  // 1호선 역 개수 : 99개
+  for(let i = 0; i < 99; i++){
+    console.log(info[i].STATION_NM);
+    let stationNm = info[i].STATION_NM;
+    test.innerHTML = stationNm;
+  }
+}
+
+getStationInformation();
