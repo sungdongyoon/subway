@@ -1,7 +1,7 @@
 // const getLiveData = async () => {
-//   let res = await fetch(`http://swopenAPI.seoul.go.kr/api/subway/45724870526568643434635358536e/json/realtimePosition/0/20/1호선`);
+//   let res = await fetch(`http://swopenAPI.seoul.go.kr/api/subway/45724870526568643434635358536e/json/realtimePosition/0/51/4호선`);
 //   let data = await res.json();
-
+//   console.log(data)
 //   let state = data.realtimePositionList[0].trainSttus;
 //   let direction = data.realtimePositionList[0].updnLine;
 //   function subwayDirection() {
@@ -51,49 +51,52 @@
 
 
 
-
-const getStationData = async () => {
-  let res = await fetch(`http://swopenAPI.seoul.go.kr/api/subway/45724870526568643434635358536e/json/realtimeStationArrival/0/10/회룡`)
+const getStationData = async (target) => {
+  let res = await fetch(`http://swopenAPI.seoul.go.kr/api/subway/45724870526568643434635358536e/json/realtimeStationArrival/0/10/${target}`)
   let data = await res.json();
   console.log(data);
   
   const stationName = document.querySelector(".station_name");
   const destination1 = document.querySelector(".destination1");
   const destination2 = document.querySelector(".destination2");
-  const stationInfo1 = data.realtimeArrivalList[4];
-  const stationInfo2 = data.realtimeArrivalList[5];
+  const stationInfo1 = data.realtimeArrivalList[0];
+  const stationInfo2 = data.realtimeArrivalList[1];
   
   stationName.innerHTML = `<span>${stationInfo1.statnNm}역 도착정보</span>`;
 
-  destination1.innerHTML = `<div>1</div><span><b>${stationInfo1.trainLineNm}</span></b> <br/> <span>${stationInfo1.arvlMsg2}</span> <br/>
-  ${stationInfo1.barvlDt}초 후에 도착 예정입니다.`;
-
-  destination2.innerHTML = `<div>2</div><span><b>${stationInfo2.trainLineNm}</span></b> <br/> <span>${stationInfo2.arvlMsg2}</span> <br/>
-  ${stationInfo2.barvlDt}초 후에 도착 예정입니다.`;
+  destination1.innerHTML = `<span class="direction"><b>${stationInfo1.trainLineNm}</span></b><br/>
+  <span class="state">${stationInfo1.arvlMsg2}</span><br/>
+  <span class="arr_time">${stationInfo1.barvlDt}초 후에 도착 예정입니다.</span>`;
+  destination2.innerHTML = `<span class="direction"><b>${stationInfo2.trainLineNm}</span></b><br/>
+  <span class="state">${stationInfo2.arvlMsg2}</span><br/>
+  <span class="arr_time">${stationInfo2.barvlDt}초 후에 도착 예정입니다.</span>`;
 }
 
 
-const test = document.querySelector(".test");
+const station = document.querySelector(".station");
 
 const getStationInformation = async () => {
   let res = await fetch(`http://openapi.seoul.go.kr:8088/45724870526568643434635358536e/json/SearchSTNBySubwayLineInfo/1/100/ / /4호선`)
   let data = await res.json();
-  console.log(data);
   let row = data.SearchSTNBySubwayLineInfo.row;
-  console.log(row)
   row.sort((a, b) => (
-    a.FR_CODE - b.FR_CODE
+    a.FR_CODE- b.FR_CODE
   ))
-  console.log(row);
-  // 1호선 역 개수 : 99개
-  for(let i = 0; i < 99; i++){
-    console.log(row[i].STATION_NM);
+  // 4호선 역 개수 : 51개
+  for(let i = 0; i < 51; i++){
     const stationNm = row[i].STATION_NM;
-    const stationCode = (row[i].FR_CODE);
-    const div = document.createElement("div");
-    test.appendChild(div);
-    div.innerText = `${stationNm} / ${stationCode}`;
+    const stationDiv = document.createElement("div");
+    station.appendChild(stationDiv);
+    stationDiv.innerHTML = `<div class="station_item" value=${stationNm}>${stationNm}</div>`;
   };
+  const stationItem = document.querySelectorAll(".station_item");
+  stationItem.forEach((it) => {
+    it.addEventListener("click", (e) => {
+      const target = e.target.textContent;
+      getStationData(target);
+      console.log(target)
+    })
+  })
 }
 
 getStationInformation();
